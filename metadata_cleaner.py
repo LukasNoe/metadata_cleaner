@@ -39,21 +39,45 @@ def _create_df(data):
         if iid in missing_id:
             continue
 
+        name = rows['content']['freetext'].get('name', None)
+        if name:
+            name = name[0]['content'] #name[0]['label'] #store label and content?
         
-        #name = rows['content']['freetext']['name']['content']
         title = rows['content']['descriptiveNonRepeating']['title']['content']
-        #date = rows['content']['freetext']['date']['content']
+        
         
         date = rows['content']['freetext'].get('date', None)
         if date:
             date = date[0]['content']
+
+        dateRange = rows['content']['indexedStructured'].get('date', None)
+        if date:
+            dateRange = dateRange #Stores it as list -.-
         
-        #object_type = rows['content']['indexedStructured']['object_type']
+        objectType = rows['content']['freetext'].get('objectType', None)
+        if objectType:
+            objectType = objectType[0]['content']
 
+        physicalDescription = rows['content']['freetext'].get('physicalDescription', None)
+        if physicalDescription:
+            physicalDescription = physicalDescription[0]['content']
+
+        topic = rows['content']['freetext'].get('topic', None)
+        if topic:
+            topic = topic[0]['content']#how to get ALL elments in topic?
+        
+        culture = rows['content']['indexedStructured'].get('culture', None)
+        if culture:
+            culture = culture
+
+        notes = rows['content']['freetext'].get('notes', None)
+        if notes:
+            notes = notes[0]['content']
         
         
-        #culture = rows['content']['indexedStructured']['culture']
-        #topic = rows['content']['indexedStructured']['topic']
+            
+            
+
 
         
 
@@ -61,12 +85,15 @@ def _create_df(data):
 
 
 
-    cleanData.append((iid, title, date))
+        cleanData.append((iid, name, title, date, dateRange, objectType, physicalDescription, topic, culture, notes))
+        
     print(len(cleanData))
-
-    df = pd.DataFrame(cleanData, columns = ['iid', 'title', 'date'])
+    
+    df = pd.DataFrame(cleanData, columns = ['iid', 'name', 'title', 'date', 'dateRange', 'type', 'medium', 'topic', 'culture', 'notes'])
     print(df.head(5))
 
+    #df.to_csv('test.csv', index=False)
+    
 #question: how to find all keys in dict?
 """
 def _find_all_keys(data):
