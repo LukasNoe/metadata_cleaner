@@ -41,7 +41,10 @@ def _create_df(data):
 
         name = rows['content']['freetext'].get('name', None)
         if name:
-            name = name[0]['content'] #name[0]['label'] #store label and content?
+             #name[0]['label'] #store label and content?
+            role = name[0]['label']
+            name = name[0]['content']
+
         
         title = rows['content']['descriptiveNonRepeating']['title']['content']
         
@@ -64,7 +67,7 @@ def _create_df(data):
 
         topic = rows['content']['freetext'].get('topic', None)
         if topic:
-            topic = topic[0]['content']#how to get ALL elments in topic?
+            topic = [n['content'] for n in topic]
         
         culture = rows['content']['indexedStructured'].get('culture', None)
         if culture:
@@ -72,8 +75,7 @@ def _create_df(data):
 
         notes = rows['content']['freetext'].get('notes', None)
         if notes:
-            notes = notes[0]['content']
-        
+            notes = [n['content'] for n in notes]        
         
             
             
@@ -85,14 +87,16 @@ def _create_df(data):
 
 
 
-        cleanData.append((iid, name, title, date, dateRange, objectType, physicalDescription, topic, culture, notes))
+        cleanData.append((iid, role, name, title, date, dateRange, objectType, physicalDescription, topic, culture, notes))
         
     print(len(cleanData))
     
-    df = pd.DataFrame(cleanData, columns = ['iid', 'name', 'title', 'date', 'dateRange', 'type', 'medium', 'topic', 'culture', 'notes'])
+    df = pd.DataFrame(cleanData, columns = ['iid', 'role', 'name', 'title', 'date', 'dateRange', 'type', 'medium', 'topic', 'culture', 'notes'])
     print(df.head(5))
 
-    #df.to_csv('test.csv', index=False)
+    df.to_csv('test.csv', index=False, sep='|', encoding="utf-8")
+
+    df.to_json('SAAM_metadata.json', index=True, orient='records')
     
 #question: how to find all keys in dict?
 """
